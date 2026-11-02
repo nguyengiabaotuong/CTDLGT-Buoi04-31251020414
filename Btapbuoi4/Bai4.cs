@@ -9,61 +9,31 @@ namespace Btapbuoi4
     {
         static void Main()
         {
-            // Đọc dòng 1: Lấy n và q, kèm bộ lọc khoảng trắng
-            string[] line1 = Console.ReadLine().Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            if (line1.Length < 2) return;
-            long n = long.Parse(line1[0]);
-            long q = long.Parse(line1[1]);
-            // Khởi tạo 2 mảng song song để lưu khóa và dữ liệu
+            // Đọc dữ liệu:
+            string[] tokens = Console.In.ReadToEnd().Split(new char[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            if (tokens.Length < 2) return;
+            int n = int.Parse(tokens[0]);
+            int q = int.Parse(tokens[1]);
             long[] keys = new long[n];
             long[] data = new long[n];
-            // Đọc n dòng tiếp theo: Mỗi dòng chứa 1 cặp (khóa, dữ_liệu)
+            int ptr = 2; // Con trỏ chạy dọc theo mảng tokens để bốc dữ liệu
+            // Nạp dữ liệu:
             for (int i = 0; i < n; i++)
             {
-                string[] line2 = Console.ReadLine().Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                keys[i] = long.Parse(line2[0]);
-                data[i] = long.Parse(line2[1]);
+                keys[i] = long.Parse(tokens[ptr++]);
+                data[i] = long.Parse(tokens[ptr++]);
             }
-            // Đọc dòng cuối cùng chứa q khóa cần tra cứu
-            string[] queryline = Console.ReadLine().Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            long[] queries = new long[q];
-            for (int i = 0; i < q; i++)
-            {
-                queries[i] = long.Parse(queryline[i]);
-            }
-            // Dùng StringBuilder để gom kết quả in ra một lần
             StringBuilder output = new StringBuilder();
-            // Xử lý q truy vấn
+            // Xử lý truy vấn
             for (int i = 0; i < q; i++)
             {
-                long queryKey = queries[i];
-                // THUẬT TOÁN TÌM KIẾM NHỊ PHÂN
-                int left = 0;
-                int right = (int)(n - 1);
-                bool found = false;
-                long foundData = 0;
-                while (left <= right)
+                long query = long.Parse(tokens[ptr++]);
+                // Dùng thuật toán BinarySearch 
+                // Hàm này trả về chỉ số (>= 0) nếu tìm thấy, và số âm nếu không tìm thấy
+                int index = Array.BinarySearch(keys, query);
+                if (index >= 0)
                 {
-                    int mid = left + (right - left) / 2;
-                    if (keys[mid] == queryKey)
-                    {
-                        found = true;
-                        foundData = data[mid]; 
-                        break;
-                    }
-                    else if (keys[mid] < queryKey)
-                    {
-                        left = mid + 1;
-                    }
-                    else
-                    {
-                        right = mid - 1;
-                    }
-                }
-                // Ghi kết quả vào 
-                if (found)
-                {
-                    output.AppendLine(foundData.ToString());
+                    output.AppendLine(data[index].ToString());
                 }
                 else
                 {
